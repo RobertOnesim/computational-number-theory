@@ -1,3 +1,7 @@
+package com.ronesim.reedSolomon;
+
+import com.ronesim.util.ModInverseMatrix;
+
 import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -5,10 +9,10 @@ import java.util.stream.Collectors;
 /**
  * Created by ronesim on 10.03.2017.
  */
-class Decoding {
+public class Decoding {
     private BigInteger prime;
 
-    Decoding(BigInteger prime) {
+    public Decoding(BigInteger prime) {
         this.prime = prime;
     }
 
@@ -35,7 +39,7 @@ class Decoding {
         return res;
     }
 
-    List<BigInteger> decode(List<BigInteger> encrypted, int s) {
+    public List<BigInteger> decode(List<BigInteger> encrypted, int s) {
         List<BigInteger> decrypted = new ArrayList<>();
         // generate all subsets |A| = k and compute the free coeff
         int N = encrypted.size();

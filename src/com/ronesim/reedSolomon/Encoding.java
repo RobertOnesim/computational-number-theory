@@ -1,3 +1,5 @@
+package com.ronesim.reedSolomon;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,18 +8,18 @@ import java.util.List;
 /**
  * Created by ronesim on 09.03.2017.
  */
-class Encoding {
+public class Encoding {
     private List<Integer> coeff;
     private BigInteger prime;
     private int s; // number of errors
 
-    Encoding(List<Integer> coeff, BigInteger prime, int s) {
+    public Encoding(List<Integer> coeff, BigInteger prime, int s) {
         this.coeff = coeff;
         this.prime = prime;
         this.s = s;
     }
 
-    List<BigInteger> encode() {
+    public List<BigInteger> encode() {
         System.out.println("Coeff: " + Arrays.toString(coeff.toArray()));
         // calculate N = k + 2*s
         int k = coeff.size() + 1;

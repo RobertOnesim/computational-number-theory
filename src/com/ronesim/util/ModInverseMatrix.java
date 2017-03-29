@@ -1,17 +1,18 @@
+package com.ronesim.util;
 /**
- * Created by user on 3/11/2017.
+ * Created by ronesim on 3/11/2017.
  */
 
 import java.math.BigInteger;
 import java.util.Arrays;
 
-class ModInverseMatrix {
+public class ModInverseMatrix {
     private int row;
     private int col;
     private BigInteger[][] data;
     private BigInteger mod;
 
-    ModInverseMatrix(BigInteger[][] dat, BigInteger mod) {
+    public ModInverseMatrix(BigInteger[][] dat, BigInteger mod) {
         this.data = dat;
         this.row = dat.length;
         this.col = dat[0].length;
@@ -80,7 +81,7 @@ class ModInverseMatrix {
         return mat;
     }
 
-    ModInverseMatrix inverse(ModInverseMatrix matrix) {
+    public ModInverseMatrix inverse(ModInverseMatrix matrix) {
         return (transpose(cofactor(matrix)).dc(determinant(matrix)));
     }
 
@@ -105,16 +106,16 @@ class ModInverseMatrix {
         return this;
     }
 
-    BigInteger[][] getData() {
+    public BigInteger[][] getData() {
         return data;
     }
 
 
-    int getRow() {
+    public int getRow() {
         return row;
     }
 
-    int getCol() {
+    public int getCol() {
         return col;
     }
 
