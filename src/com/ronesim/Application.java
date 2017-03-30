@@ -2,10 +2,8 @@ package com.ronesim;
 
 import com.ronesim.reedSolomon.Decoding;
 import com.ronesim.reedSolomon.Encoding;
-import com.ronesim.rsa.Decrypt;
-import com.ronesim.rsa.Encrypt;
-import com.ronesim.rsa.RSA;
-import com.ronesim.util.RSAHelper;
+import com.ronesim.rsa.*;
+import com.ronesim.util.RSAComparison;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,8 +29,11 @@ public class Application {
             case "reed-solomon":
                 reedSolomon();
                 break;
-            case "RSA":
+            case "multiPrimeRSA":
                 multiPrimeRSA();
+                break;
+            case "multiPowerRSA":
+                multiPowerRSA();
                 break;
             default:
                 System.out.println("Incorrect application specified.");
@@ -73,37 +74,62 @@ public class Application {
     private static void multiPrimeRSA() {
         Random rnd = new Random();
         BigInteger message = BigInteger.probablePrime(512, rnd);
-        RSA rsa = new RSA(message);
-        BigInteger cryptoText = new Encrypt().encrypt(message, rsa.getMultiPrimeN(), rsa.getE());
-        System.out.println(rsa.toString());
+        RSA multiPrimeRSA = new MultiPrimeRSA(message);
+        BigInteger cryptoText = new Encrypt().encrypt(message, multiPrimeRSA.getN(), multiPrimeRSA.getE());
+        System.out.println(multiPrimeRSA.toString());
         System.out.println("Encrypted text is: " + cryptoText);
 
         // Start decryption
-        List<BigInteger> primes = rsa.getPrimeList();
+        List<BigInteger> primesMultiPrime = multiPrimeRSA.getMultiPrimeList();
 
-        Decrypt decrypt = new Decrypt(cryptoText, primes, rsa.getD());
+        Decrypt decrypt = new Decrypt(cryptoText, primesMultiPrime, multiPrimeRSA.getD());
         BigInteger decryptedText = decrypt.getDecryptedTextGarner();
 
         System.out.println("Decrypted text is: " + decryptedText + "\n");
 
         // Compare time between Garner's algorithm and java BigInteger library computation
+        comparison("multi-prime", "library");
+
+    }
+
+    private static void multiPowerRSA() {
+        Random rnd = new Random();
+        BigInteger message = BigInteger.probablePrime(512, rnd);
+        RSA multiPowerRSA = new MultiPowerRSA(message);
+        BigInteger cryptoText = new Encrypt().encrypt(message, multiPowerRSA.getN(), multiPowerRSA.getE());
+        System.out.println(multiPowerRSA.toString());
+        System.out.println("Encrypted text is: " + cryptoText);
+
+        // Start decryption
+        List<BigInteger> primesMultiPower = multiPowerRSA.getMultiPrimeList();
+
+        Decrypt decrypt = new Decrypt(cryptoText, primesMultiPower, multiPowerRSA.getD(), multiPowerRSA.getE());
+        BigInteger decryptedText = decrypt.getDecryptedTextMultiPower();
+        System.out.println("Decrypted text is: " + decryptedText + "\n");
+
+        comparison("multi-power", "library");
+
+    }
+
+    private static void comparison(String typeOne, String typeTwo) {
         int NUMBER_OF_INSTANCES = 100;
-        System.out.println("Comparison between Garner's algorithm and BigInteger library (" + NUMBER_OF_INSTANCES + " instances)");
+        System.out.println("Comparison between " + typeOne + " algorithm and " + typeTwo + " algorithm (" + NUMBER_OF_INSTANCES + " instances)");
         System.out.println("=============================================");
 
-        RSAHelper rsaHelper = new RSAHelper(NUMBER_OF_INSTANCES);
+        RSAComparison rsaComparison = new RSAComparison(NUMBER_OF_INSTANCES, typeOne);
 
         final long startLib = System.nanoTime();
         // run using BigInteger library
-        rsaHelper.run("library");
+        rsaComparison.run(typeTwo);
         final long endLib = System.nanoTime();
-        System.out.println("Using Library: " + ((endLib - startLib) / 1000000) + "ms");
+        System.out.println("Using " + typeTwo + " : " + ((endLib - startLib) / 1000000) + "ms");
 
-        final long startGarner = System.nanoTime();
+        final long startPower = System.nanoTime();
         // run using BigInteger library
-        rsaHelper.run("garner");
-        final long endGarner = System.nanoTime();
-        System.out.println("Using Garner's Algorithm: " + ((endGarner - startGarner) / 1000000) + "ms");
+        rsaComparison.run(typeOne);
+        final long endPower = System.nanoTime();
+        System.out.println("Using " + typeOne + " algorithm: " + ((endPower - startPower) / 1000000) + "ms");
+        System.out.println("Compare results: " + rsaComparison.compareResults());
 
     }
 
