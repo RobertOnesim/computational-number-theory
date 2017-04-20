@@ -1,5 +1,6 @@
 package com.ronesim;
 
+import com.ronesim.primalityTests.PrimalityTest;
 import com.ronesim.reedSolomon.Decoding;
 import com.ronesim.reedSolomon.Encoding;
 import com.ronesim.rsa.*;
@@ -89,6 +90,31 @@ class Controller {
         comparison("multi-power", "library");
 
     }
+
+    void primalityTests(int number, String type) {
+        // security parameter
+        int SECURITY_PARAM = 100;
+
+        switch (type) {
+            case "solovay-strassen":
+                if (number < 3 || number % 2 == 0) throw new Error("Invalid number (odd and >=3)");
+                // solovayStrassen
+                PrimalityTest primalityTestSolvayStrassen = new PrimalityTest(number, SECURITY_PARAM);
+                String primeStatusSS = primalityTestSolvayStrassen.solovayStrassen();
+                System.out.println("Solvay-Strassen result: number " + number + " is " + primeStatusSS);
+                break;
+            case "lucas-lehmer":
+                PrimalityTest primalityTestLucasLehmer = new PrimalityTest(number);
+                String primeStatusLL = primalityTestLucasLehmer.lucasLehmerMersenne();
+                System.out.println("Lucas-Lehmer result: number " + primalityTestLucasLehmer.getMersenneNumber() + " is " + primeStatusLL);
+                break;
+            default:
+                throw new Error("Invalid type");
+        }
+
+
+    }
+
 
     private void comparison(String typeOne, String typeTwo) {
         int NUMBER_OF_INSTANCES = 100;

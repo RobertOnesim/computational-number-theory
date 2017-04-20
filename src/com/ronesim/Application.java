@@ -11,6 +11,7 @@ public class Application {
         /* check what app to run
             1. reed-solomon
             2. RSA
+            3. primality: type(solovay-strassen or lucas-lehmer)
         */
         Controller controller = new Controller();
         switch (args[0]) {
@@ -22,6 +23,9 @@ public class Application {
                 break;
             case "multiPowerRSA":
                 controller.multiPowerRSA();
+                break;
+            case "primality":
+                controller.primalityTests(Integer.valueOf(args[1]), args[2]);
                 break;
             default:
                 System.out.println("Incorrect application specified.");
