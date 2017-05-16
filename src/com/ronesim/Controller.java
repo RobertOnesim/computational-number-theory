@@ -1,5 +1,7 @@
 package com.ronesim;
 
+import com.ronesim.discreteLogarithm.DiscreteLogarithm;
+import com.ronesim.discreteLogarithm.PrimitiveRoot;
 import com.ronesim.primalityTests.PrimalityTest;
 import com.ronesim.reedSolomon.Decoding;
 import com.ronesim.reedSolomon.Encoding;
@@ -11,10 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by ronesim on 30.03.2017.
@@ -101,7 +100,7 @@ class Controller {
                 // solovayStrassen
                 PrimalityTest primalityTestSolvayStrassen = new PrimalityTest(number, SECURITY_PARAM);
                 String primeStatusSS = primalityTestSolvayStrassen.solovayStrassen();
-                System.out.println("Solvay-Strassen result: number " + number + " is " + primeStatusSS);
+                System.out.println("Solovay-Strassen result: number " + number + " is " + primeStatusSS);
                 break;
             case "lucas-lehmer":
                 PrimalityTest primalityTestLucasLehmer = new PrimalityTest(number);
@@ -136,5 +135,37 @@ class Controller {
         System.out.println("Using " + typeOne + " algorithm: " + ((endPower - startPower) / 1000000) + "ms");
         System.out.println("Compare results: " + rsaComparison.compareResults());
 
+    }
+
+    void app4() {
+        // Generate primitive root modulo p prime
+        // p = 2 * q + 1, q prime
+        BigInteger q = BigInteger.probablePrime(32, new Random());
+        //BigInteger q = new BigInteger(String.valueOf(5));
+        PrimitiveRoot primitiveRoot = new PrimitiveRoot(q.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE));
+        System.out.println("Prime number is: " + primitiveRoot.getMod());
+        BigInteger root = primitiveRoot.generateRoot();
+        System.out.println("Primitive root is: " + root);
+        List<BigInteger> primeFactorization = new ArrayList<>();
+        primeFactorization.add(BigInteger.valueOf(2));
+        primeFactorization.add(q);
+        System.out.println("Verify primitive root: " + primitiveRoot.checkPrivateRoot(root, primeFactorization));
+
+        //DiscreteLogarithm discreteLogarithm = new DiscreteLogarithm(primitiveRoot.getMod(), root, BigInteger.valueOf(34));
+        DiscreteLogarithm discreteLogarithm = new DiscreteLogarithm(BigInteger.valueOf(383), BigInteger.valueOf(2), BigInteger.valueOf(228));
+        System.out.println("Discrete Logarithm value (Pollard's algorithm): " + discreteLogarithm.PollardAlgorithm(0, 0));
+
+
+        HashMap<Integer, Integer> factorization = new HashMap<Integer, Integer>();
+        factorization.put(2, 1);
+        factorization.put(5, 3);
+
+        BigInteger p = new BigInteger("251");
+        PrimitiveRoot primitiveRoot1 = new PrimitiveRoot(p);
+        root = primitiveRoot1.generateRoot(factorization);
+        System.out.println("Primitive root for each p prime: " + root);
+        DiscreteLogarithm pohlingHellman = new DiscreteLogarithm(p, BigInteger.valueOf(71), BigInteger.valueOf(210), factorization);
+        BigInteger ans = pohlingHellman.pohligHellmanAlgorithm();
+        System.out.println("Discrete Logarithm value (Pohlig-Hellman's algorithm): " + ans);
     }
 }

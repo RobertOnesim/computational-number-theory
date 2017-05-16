@@ -11,7 +11,7 @@ import java.util.Random;
 public class PrimalityTest {
     private int number;
     private int securityParam;
-    private int s; // user for Lucas-Lehmer primality test for Mersenne numbers
+    private int s; // used for Lucas-Lehmer primality test for Mersenne numbers
     private BigInteger MersenneNumber;
 
     public PrimalityTest(int number, int securityParam) {
@@ -47,7 +47,8 @@ public class PrimalityTest {
         BigInteger u = BigInteger.valueOf(4);
         for (int k = 1; k <= s - 2; k++) {
             BigInteger aux = reductionModMersenne(u);
-            u = aux.multiply(aux).subtract(BigInteger.valueOf(2)).mod(MersenneNumber);
+            u = aux.multiply(aux).subtract(BigInteger.valueOf(2));
+            u = reductionModMersenne(u);
         }
         if (u.equals(BigInteger.ZERO)) return "prime";
         return "composite";

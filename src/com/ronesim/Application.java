@@ -27,6 +27,9 @@ public class Application {
             case "primality":
                 controller.primalityTests(Integer.valueOf(args[1]), args[2]);
                 break;
+            case "app4":
+                controller.app4();
+                break;
             default:
                 System.out.println("Incorrect application specified.");
         }
